@@ -1,0 +1,53 @@
+/* CSS đơn giản để làm đẹp giao diện */
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.todo-item {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-item button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.todo-item button:first-of-type {
+  background-color: #4caf50;
+  color: white;
+}
+
+.todo-item button:last-of-type {
+  background-color: #f44336;
+  color: white;
+}
+
+#todoInput {
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#addButton {
+  padding: 8px 15px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#addButton:hover {
+  background-color: #1976d2;
+}
