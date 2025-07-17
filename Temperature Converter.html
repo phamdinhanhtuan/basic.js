@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đổi đơn vị nhiệt độ</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    input, select, button { font-size: 1.1rem; padding: 6px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #0984e3; color: #fff; border: none; margin-left: 10px; cursor: pointer; }
+    button:hover { background: #74b9ff; }
+    #output { margin-top: 20px; font-size: 1.3rem; color: #00b894; }
+  </style>
+</head>
+<body>
+  <h2>Đổi đơn vị nhiệt độ</h2>
+  <input type="number" id="temp" placeholder="Nhập nhiệt độ">
+  <select id="from">
+    <option value="C">Celsius (°C)</option>
+    <option value="F">Fahrenheit (°F)</option>
+  </select>
+  <button onclick="convertTemp()">Đổi</button>
+  <div id="output"></div>
+  <script>
+    function convertTemp() {
+      const temp = parseFloat(document.getElementById('temp').value);
+      const from = document.getElementById('from').value;
+      let result = '';
+      if (isNaN(temp)) {
+        result = 'Vui lòng nhập số!';
+      } else if (from === 'C') {
+        result = `${temp}°C = ${(temp * 9/5 + 32).toFixed(2)}°F`;
+      } else {
+        result = `${temp}°F = ${((temp - 32) * 5/9).toFixed(2)}°C`;
+      }
+      document.getElementById('output').textContent = result;
+    }
+  </script>
+</body>
+</html>
