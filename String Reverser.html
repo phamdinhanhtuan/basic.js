@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đảo ngược chuỗi</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    input, button { font-size: 1.1rem; padding: 6px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #0984e3; color: #fff; border: none; margin-left: 10px; cursor: pointer; }
+    button:hover { background: #74b9ff; }
+    #result { margin-top: 20px; font-size: 1.3rem; color: #d63031; }
+  </style>
+</head>
+<body>
+  <h2>Đảo ngược chuỗi</h2>
+  <input type="text" id="inputStr" placeholder="Nhập chuỗi...">
+  <button onclick="reverseStr()">Đảo ngược</button>
+  <div id="result"></div>
+  <script>
+    function reverseStr() {
+      const str = document.getElementById('inputStr').value;
+      const reversed = str.split('').reverse().join('');
+      document.getElementById('result').textContent = reversed;
+    }
+  </script>
+</body>
+</html>
