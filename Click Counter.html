@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đếm số lần bấm nút</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    #count { font-size: 2.5rem; color: #0984e3; margin: 20px 0; }
+    button { padding: 10px 30px; font-size: 1.2rem; border-radius: 6px; border: none; background: #00b894; color: #fff; cursor: pointer; }
+    button:hover { background: #55efc4; }
+  </style>
+</head>
+<body>
+  <h2>Đếm số lần bấm nút</h2>
+  <div id="count">0</div>
+  <button id="btn">Bấm tôi!</button>
+  <script>
+    let count = 0;
+    document.getElementById('btn').onclick = function() {
+      count++;
+      document.getElementById('count').textContent = count;
+    };
+  </script>
+</body>
+</html>
