@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lọc số không trùng trong mảng</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    input, button { font-size: 1.1rem; padding: 6px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #0984e3; color: #fff; border: none; margin-left: 10px; cursor: pointer; }
+    button:hover { background: #74b9ff; }
+    #result { margin-top: 20px; font-size: 1.1rem; color: #00b894; }
+  </style>
+</head>
+<body>
+  <h2>Lọc số không trùng trong mảng</h2>
+  <input type="text" id="arrayInput" placeholder="Nhập dãy số, cách nhau bởi dấu phẩy">
+  <button onclick="filterUnique()">Lọc</button>
+  <div id="result"></div>
+  <script>
+    function filterUnique() {
+      const input = document.getElementById('arrayInput').value;
+      const arr = input.split(',').map(x => x.trim()).filter(x => x !== '').map(Number);
+      const unique = [...new Set(arr)];
+      document.getElementById('result').textContent = 'Mảng sau khi lọc: ' + unique.join(', ');
+    }
+  </script>
+</body>
+</html>
