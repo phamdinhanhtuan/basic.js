@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đếm số lần xuất hiện ký tự</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    input, button { font-size: 1.1rem; padding: 6px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #0984e3; color: #fff; border: none; margin-left: 10px; cursor: pointer; }
+    button:hover { background: #74b9ff; }
+    #result { margin-top: 20px; font-size: 1.1rem; color: #d35400; }
+  </style>
+</head>
+<body>
+  <h2>Đếm số lần xuất hiện ký tự</h2>
+  <input type="text" id="inputStr" placeholder="Nhập chuỗi...">
+  <button onclick="countChars()">Đếm</button>
+  <div id="result"></div>
+  <script>
+    function countChars() {
+      const str = document.getElementById('inputStr').value;
+      const freq = {};
+      for (let char of str) {
+        freq[char] = (freq[char] || 0) + 1;
+      }
+      let output = '';
+      for (let char in freq) {
+        output += `'${char}': ${freq[char]} lần; `;
+      }
+      document.getElementById('result').textContent = output || 'Vui lòng nhập chuỗi!';
+    }
+  </script>
+</body>
+</html>
