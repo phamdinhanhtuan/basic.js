@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Kiểm tra số nguyên tố</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+    input, button { font-size: 1.1rem; padding: 6px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #0984e3; color: #fff; border: none; margin-left: 10px; cursor: pointer; }
+    button:hover { background: #74b9ff; }
+    #result { margin-top: 20px; font-size: 1.3rem; color: #d63031; }
+  </style>
+</head>
+<body>
+  <h2>Kiểm tra số nguyên tố</h2>
+  <input type="number" id="number" placeholder="Nhập số nguyên dương">
+  <button onclick="checkPrime()">Kiểm tra</button>
+  <div id="result"></div>
+  <script>
+    function isPrime(n) {
+      if (n < 2) return false;
+      for (let i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i === 0) return false;
+      }
+      return true;
+    }
+    function checkPrime() {
+      const n = parseInt(document.getElementById('number').value, 10);
+      let msg = '';
+      if (isNaN(n) || n < 1) {
+        msg = 'Vui lòng nhập số nguyên dương!';
+      } else if (isPrime(n)) {
+        msg = `${n} là số nguyên tố!`;
+      } else {
+        msg = `${n} không phải là số nguyên tố.`;
+      }
+      document.getElementById('result').textContent = msg;
+    }
+  </script>
+</body>
+</html>
