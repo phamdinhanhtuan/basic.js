@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Đồng hồ báo thức</title>
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+        margin-top: 50px;
+      }
+      input,
+      button {
+        font-size: 1.2em;
+        margin: 5px;
+      }
+      #current-time {
+        font-size: 2em;
+        margin-bottom: 20px;
+      }
+      #alarm-status {
+        color: green;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="current-time"></div>
+    <input type="time" id="alarm-time" />
+    <button onclick="setAlarm()">Đặt báo thức</button>
+    <div id="alarm-status"></div>
+    <audio
+      id="alarm-audio"
+      src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"
+      preload="auto"
+    ></audio>
+    <script src="alarm.js"></script>
+  </body>
+</html>
