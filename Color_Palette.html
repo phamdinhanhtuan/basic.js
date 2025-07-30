@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .color-item {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .color-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-display {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .color-code {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .color-item:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .copy-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #333;
+        }
+
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .info h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .palette {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+
+            .color-display {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Color Palette Generator</h1>
+            <p>Tạo bảng màu ngẫu nhiên với 5 màu sắc đẹp mắt</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="generatePalette()">🎲 Tạo bảng màu mới</button>
+            <button class="btn" onclick="copyAllColors()">📋 Copy tất cả mã màu</button>
+        </div>
+
+        <div class="palette" id="palette">
+            <!-- Color items will be generated here -->
+        </div>
+
+        <div class="info">
+            <h3>💡 Hướng dẫn sử dụng</h3>
+            <p>
+                • Nhấn "Tạo bảng màu mới" để tạo 5 màu ngẫu nhiên<br>
+                • Click vào từng màu để copy mã hex<br>
+                • Nhấn "Copy tất cả mã màu" để copy toàn bộ bảng màu<br>
+                • Màu sắc được tạo ngẫu nhiên và hài hòa với nhau
+            </p>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        ✅ Đã copy mã màu vào clipboard!
+    </div>
+
+    <script>
+        class ColorPaletteGenerator {
+            constructor() {
+                this.palette = [];
+                this.init();
+            }
+
+            init() {
+                this.generatePalette();
+                this.renderPalette();
+            }
+
+            // Tạo màu hex ngẫu nhiên
+            generateRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            // Tạo bảng màu với 5 màu
+            generatePalette() {
+                this.palette = [];
+                for (let i = 0; i < 5; i++) {
+                    this.palette.push(this.generateRandomColor());
+                }
+            }
+
+            // Hiển thị bảng màu
+            renderPalette() {
+                const paletteContainer = document.getElementById('palette');
+                paletteContainer.innerHTML = '';
+
+                this.palette.forEach((color, index) => {
+                    const colorItem = document.createElement('div');
+                    colorItem.className = 'color-item';
+                    colorItem.innerHTML = `
+                        <div class="color-display" style="background-color: ${color}">
+                            <div class="color-code">${color}</div>
+                            <button class="copy-btn" onclick="copyColor('${color}')" title="Copy mã màu">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    paletteContainer.appendChild(colorItem);
+                });
+            }
+
+            // Copy một màu
+            copyColor(color) {
+                navigator.clipboard.writeText(color).then(() => {
+                    this.showNotification(`Đã copy mã màu: ${color}`);
+                }).catch(err => {
+                    console.error('Lỗi copy:', err);
+                    this.showNotification('Không thể copy mã màu');
+                });
+            }
+
+            // Copy tất cả màu
+            copyAllColors() {
+                const allColors = this.palette.join('\n');
+                navigator.clipboard.writeText(allColors).then(() => {
+                    this.showNotification('Đã copy tất cả mã màu vào clipboard!');
+                }).catch(err => {
+                    console.error('Lỗi copy:', err);
+                    this.showNotification('Không thể copy mã màu');
+                });
+            }
+
+            // Hiển thị thông báo
+            showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        // Khởi tạo ứng dụng
+        const colorGenerator = new ColorPaletteGenerator();
+
+        // Các hàm global để gọi từ HTML
+        function generatePalette() {
+            colorGenerator.generatePalette();
+            colorGenerator.renderPalette();
+        }
+
+        function copyColor(color) {
+            colorGenerator.copyColor(color);
+        }
+
+        function copyAllColors() {
+            colorGenerator.copyAllColors();
+        }
+
+        // Thêm hiệu ứng hover cho color items
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorItems = document.querySelectorAll('.color-item');
+            colorItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
