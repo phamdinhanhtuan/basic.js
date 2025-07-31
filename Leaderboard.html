@@ -1,0 +1,193 @@
+// ... existing code ...
+
+// Bỏ comment dòng sau để chạy thử Study Checklist độc lập
+// showChecklistMenu(); 
+
+// --- Ứng dụng Bảng xếp hạng (Leaderboard) ---
+class Player {
+  constructor(name, score) {
+    this.name = name;
+    this.score = score;
+    this.date = new Date().toLocaleDateString('vi-VN');
+  }
+}
+
+class Leaderboard {
+  constructor() {
+    this.players = [];
+  }
+
+  // Thêm người chơi mới
+  addPlayer(name, score) {
+    if (!name || name.trim() === '') {
+      throw new Error('Tên người chơi không được để trống.');
+    }
+    if (isNaN(score) || score < 0) {
+      throw new Error('Điểm số phải là số dương.');
+    }
+    
+    const player = new Player(name.trim(), Number(score));
+    this.players.push(player);
+    this.sortByScore(); // Tự động sắp xếp sau khi thêm
+    console.log(`Đã thêm người chơi: ${player.name} với ${player.score} điểm`);
+  }
+
+  // Sắp xếp theo điểm số giảm dần
+  sortByScore() {
+    this.players.sort((a, b) => b.score - a.score);
+  }
+
+  // Hiển thị bảng xếp hạng
+  displayLeaderboard() {
+    if (this.players.length === 0) {
+      console.log('Bảng xếp hạng trống.');
+      return;
+    }
+
+    console.log('\n🏆 BẢNG XẾP HẠNG 🏆');
+    console.log('─'.repeat(60));
+    console.log('Hạng | Tên người chơi'.padEnd(30) + '| Điểm số'.padEnd(15) + '| Ngày');
+    console.log('─'.repeat(60));
+
+    this.players.forEach((player, index) => {
+      const rank = index + 1;
+      const rankSymbol = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
+      const name = player.name.padEnd(25);
+      const score = player.score.toString().padEnd(10);
+      console.log(`${rankSymbol.padEnd(5)} | ${name} | ${score} | ${player.date}`);
+    });
+    console.log('─'.repeat(60));
+  }
+
+  // Tìm kiếm người chơi
+  searchPlayer(name) {
+    const lowerName = name.toLowerCase();
+    const found = this.players.filter(p => 
+      p.name.toLowerCase().includes(lowerName)
+    );
+    
+    if (found.length === 0) {
+      console.log(`Không tìm thấy người chơi có tên "${name}"`);
+      return;
+    }
+    
+    console.log(`\nKết quả tìm kiếm cho "${name}":`);
+    found.forEach(player => {
+      const rank = this.players.findIndex(p => p.name === player.name) + 1;
+      console.log(`Hạng ${rank}: ${player.name} - ${player.score} điểm (${player.date})`);
+    });
+  }
+
+  // Xóa người chơi
+  removePlayer(name) {
+    const index = this.players.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+    if (index === -1) {
+      throw new Error(`Không tìm thấy người chơi "${name}"`);
+    }
+    const [removed] = this.players.splice(index, 1);
+    console.log(`Đã xóa người chơi: ${removed.name}`);
+  }
+
+  // Thống kê
+  getStats() {
+    if (this.players.length === 0) {
+      console.log('Chưa có dữ liệu thống kê.');
+      return;
+    }
+
+    const totalPlayers = this.players.length;
+    const avgScore = this.players.reduce((sum, p) => sum + p.score, 0) / totalPlayers;
+    const topScore = this.players[0].score;
+    const lowestScore = this.players[this.players.length - 1].score;
+
+    console.log('\n📊 THỐNG KÊ');
+    console.log(`Tổng số người chơi: ${totalPlayers}`);
+    console.log(`Điểm cao nhất: ${topScore}`);
+    console.log(`Điểm thấp nhất: ${lowestScore}`);
+    console.log(`Điểm trung bình: ${avgScore.toFixed(1)}`);
+  }
+}
+
+// Khởi tạo leaderboard và giao diện
+const leaderboard = new Leaderboard();
+const rl4 = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+function showLeaderboardMenu() {
+  console.log('\n🏆 QUẢN LÝ BẢNG XẾP HẠNG 🏆');
+  console.log('1. Thêm người chơi');
+  console.log('2. Hiển thị bảng xếp hạng');
+  console.log('3. Tìm kiếm người chơi');
+  console.log('4. Xóa người chơi');
+  console.log('5. Thống kê');
+  console.log('0. Thoát');
+  rl4.question('Chọn chức năng: ', handleLeaderboardMenu);
+}
+
+function handleLeaderboardMenu(choice) {
+  switch (choice.trim()) {
+    case '1':
+      addPlayerFlow();
+      break;
+    case '2':
+      leaderboard.displayLeaderboard();
+      showLeaderboardMenu();
+      break;
+    case '3':
+      searchPlayerFlow();
+      break;
+    case '4':
+      removePlayerFlow();
+      break;
+    case '5':
+      leaderboard.getStats();
+      showLeaderboardMenu();
+      break;
+    case '0':
+      rl4.close();
+      break;
+    default:
+      console.log('Lựa chọn không hợp lệ.');
+      showLeaderboardMenu();
+  }
+}
+
+function addPlayerFlow() {
+  rl4.question('Nhập tên người chơi: ', (name) => {
+    rl4.question('Nhập điểm số: ', (score) => {
+      try {
+        leaderboard.addPlayer(name, score);
+      } catch (e) {
+        console.error('Lỗi:', e.message);
+      }
+      showLeaderboardMenu();
+    });
+  });
+}
+
+function searchPlayerFlow() {
+  rl4.question('Nhập tên người chơi cần tìm: ', (name) => {
+    leaderboard.searchPlayer(name);
+    showLeaderboardMenu();
+  });
+}
+
+function removePlayerFlow() {
+  rl4.question('Nhập tên người chơi cần xóa: ', (name) => {
+    try {
+      leaderboard.removePlayer(name);
+    } catch (e) {
+      console.error('Lỗi:', e.message);
+    }
+    showLeaderboardMenu();
+  });
+}
+
+rl4.on('close', () => {
+  console.log('Đã thoát ứng dụng Bảng xếp hạng.');
+});
+
+// Bỏ comment dòng sau để chạy thử Leaderboard độc lập
+// showLeaderboardMenu();
