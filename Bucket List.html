@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bucket List - Danh Sách Sở Thích</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .add-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .bucket-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .bucket-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .bucket-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .bucket-item.completed {
+            opacity: 0.7;
+            border-left-color: #28a745;
+        }
+
+        .bucket-item.completed .item-title {
+            text-decoration: line-through;
+            color: #666;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-category {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .item-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .item-date {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .priority-high {
+            border-left-color: #dc3545;
+        }
+
+        .priority-medium {
+            border-left-color: #ffc107;
+        }
+
+        .priority-low {
+            border-left-color: #28a745;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e1e5e9;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .item-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Bucket List</h1>
+            <p>Danh sách những việc muốn làm trong đời</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Thêm mục mới -->
+            <div class="add-section">
+                <h2>➕ Thêm mục tiêu mới</h2>
+                <form id="addForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Tiêu đề *</label>
+                            <input type="text" id="title" required placeholder="Ví dụ: Đi du lịch Nhật Bản">
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Danh mục *</label>
+                            <select id="category" required>
+                                <option value="">Chọn danh mục</option>
+                                <option value="du-lich">🌍 Du lịch</option>
+                                <option value="hoc-tap">📚 Học tập</option>
+                                <option value="the-thao">⚽ Thể thao</option>
+                                <option value="am-nhac">🎵 Âm nhạc</option>
+                                <option value="nau-an">👨‍🍳 Nấu ăn</option>
+                                <option value="cong-nghe">💻 Công nghệ</option>
+                                <option value="suc-khoe">💪 Sức khỏe</option>
+                                <option value="giai-tri">🎬 Giải trí</option>
+                                <option value="khac">✨ Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priority">Mức độ ưu tiên</label>
+                            <select id="priority">
+                                <option value="low">Thấp</option>
+                                <option value="medium" selected>Trung bình</option>
+                                <option value="high">Cao</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="targetDate">Ngày mục tiêu</label>
+                            <input type="date" id="targetDate">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Mô tả</label>
+                        <textarea id="description" rows="3" placeholder="Mô tả chi tiết về mục tiêu này..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">➕ Thêm vào Bucket List</button>
+                </form>
+            </div>
+
+            <!-- Thống kê -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-label">Tổng cộng</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-label">Đã hoàn thành</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="progressPercent">0%</div>
+                    <div class="stat-label">Tiến độ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingCount">0</div>
+                    <div class="stat-label">Đang chờ</div>
+                </div>
+            </div>
+
+            <!-- Thanh tiến độ -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- Bộ lọc -->
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                <button class="filter-btn" data-filter="du-lich">🌍 Du lịch</button>
+                <button class="filter-btn" data-filter="hoc-tap">📚 Học tập</button>
+                <button class="filter-btn" data-filter="the-thao">⚽ Thể thao</button>
+                <button class="filter-btn" data-filter="am-nhac">🎵 Âm nhạc</button>
+                <button class="filter-btn" data-filter="nau-an">👨‍🍳 Nấu ăn</button>
+                <button class="filter-btn" data-filter="cong-nghe">💻 Công nghệ</button>
+                <button class="filter-btn" data-filter="suc-khoe">💪 Sức khỏe</button>
+                <button class="filter-btn" data-filter="giai-tri">🎬 Giải trí</button>
+                <button class="filter-btn" data-filter="khac">✨ Khác</button>
+                <button class="filter-btn" data-filter="completed">✅ Đã hoàn thành</button>
+                <button class="filter-btn" data-filter="pending">⏳ Đang chờ</button>
+            </div>
+
+            <!-- Danh sách Bucket List -->
+            <div class="bucket-list" id="bucketList">
+                <div class="empty-state">
+                    <h3>🎯 Chưa có mục tiêu nào</h3>
+                    <p>Hãy thêm những việc bạn muốn làm trong đời vào Bucket List!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="bucket-list.js"></script>
+</body>
+</html>
