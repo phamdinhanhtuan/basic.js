@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Vocabulary List App</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7fa; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 24px; }
+        h1 { text-align: center; color: #4a4a8a; }
+        form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+        input, textarea, button { font-size: 1rem; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: #667eea; color: #fff; border: none; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #4a4a8a; }
+        .word-list { margin-top: 16px; }
+        .word-item { display: flex; flex-direction: column; background: #f0f4ff; border-radius: 6px; margin-bottom: 10px; padding: 10px 14px; border-left: 5px solid #667eea; }
+        .word-item.learned { opacity: 0.6; border-left-color: #4caf50; }
+        .word-header { display: flex; justify-content: space-between; align-items: center; }
+        .word { font-weight: bold; font-size: 1.1em; }
+        .meaning { color: #333; }
+        .example { color: #666; font-style: italic; margin-top: 2px; }
+        .actions { margin-top: 6px; }
+        .actions button { margin-right: 8px; font-size: 0.95em; }
+        .review-btn { width: 100%; margin-top: 18px; background: #ff9800; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Vocabulary List</h1>
+        <form id="addWordForm">
+            <input type="text" id="word" placeholder="Từ vựng *" required />
+            <input type="text" id="meaning" placeholder="Nghĩa *" required />
+            <textarea id="example" placeholder="Ví dụ (không bắt buộc)"></textarea>
+            <button type="submit">Thêm từ</button>
+        </form>
+        <button class="review-btn" id="reviewBtn">Ôn tập từ ngẫu nhiên</button>
+        <div class="word-list" id="wordList"></div>
+    </div>
+    <script src="vocabulary-list.js"></script>
+    <script>
+        function renderList() {
+            const list = vocabApp.getAllWords();
+            const container = document.getElementById('wordList');
+            if (list.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#888;">Chưa có từ nào. Hãy thêm từ mới!</div>';
+                return;
+            }
+            container.innerHTML = list.map(item => `
+                <div class="word-item${item.learned ? ' learned' : ''}">
+                    <div class="word-header">
+                        <span class="word">${item.word}</span>
+                        <span style="font-size:0.9em;color:#888;">${item.learned ? 'Đã thuộc' : 'Chưa thuộc'}</span>
+                    </div>
+                    <div class="meaning">${item.meaning}</div>
+                    ${item.example ? `<div class="example">${item.example}</div>` : ''}
+                    <div class="actions">
+                        <button onclick="toggleLearned(${item.id})">${item.learned ? '❌ Đánh dấu chưa thuộc' : '✅ Đánh dấu đã thuộc'}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleLearned(id) {
+            vocabApp.toggleLearned(id);
+            renderList();
+        }
+
+        document.getElementById('addWordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const word = document.getElementById('word').value;
+            const meaning = document.getElementById('meaning').value;
+            const example = document.getElementById('example').value;
+            vocabApp.addWord(word, meaning, example);
+            this.reset();
+            renderList();
+        });
+
+        document.getElementById('reviewBtn').addEventListener('click', function() {
+            vocabApp.reviewRandomWord();
+            renderList();
+        });
+
+        // Initial render
+        renderList();
+    </script>
+</body>
+</html>
