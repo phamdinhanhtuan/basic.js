@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Barcode Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 400px; margin: auto; }
+    input, button { padding: 8px; font-size: 16px; }
+    #barcode { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Barcode Generator</h2>
+    <input type="text" id="barcodeInput" placeholder="Nhập chuỗi ký tự..." />
+    <button onclick="generateBarcode()">Tạo mã vạch</button>
+    <svg id="barcode"></svg>
+  </div>
+  <script>
+    function generateBarcode() {
+      const value = document.getElementById('barcodeInput').value;
+      JsBarcode("#barcode", value, {
+        format: "CODE128",
+        lineColor: "#000",
+        width: 2,
+        height: 80,
+        displayValue: true
+      });
+    }
+  </script>
+</body>
+</html>
