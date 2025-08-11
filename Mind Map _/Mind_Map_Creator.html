@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Mind Map Creator</title>
+  <style>
+    body { margin: 0; font-family: Arial; }
+    #mindmap-container { position: relative; width: 100vw; height: 100vh; background: #f0f4f8; overflow: hidden; }
+    .node {
+      position: absolute;
+      min-width: 80px;
+      min-height: 40px;
+      background: #fff;
+      border: 2px solid #0074D9;
+      border-radius: 8px;
+      padding: 8px 16px;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .node.selected { border-color: #FF4136; }
+    #add-node-btn { position: fixed; top: 16px; left: 16px; z-index: 10; }
+    #link-btn { position: fixed; top: 16px; left: 120px; z-index: 10; }
+    canvas { position: absolute; top: 0; left: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+  <button id="add-node-btn">Thêm ý tưởng</button>
+  <button id="link-btn">Liên kết ý tưởng</button>
+  <div id="mindmap-container"></div>
+  <script>
+    const container = document.getElementById('mindmap-container');
+    const addNodeBtn = document.getElementById('add-node-btn');
+    const linkBtn = document.getElementById('link-btn');
+    let nodes = [];
+    let links = [];
+    let selectedNode = null;
+    let linkingMode = false;
+    let linkStartNode = null;
+
+    // Canvas for drawing lines
+    const canvas = document.createElement('canvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    container.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    function drawLinks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      links.forEach(link => {
+        const from = link.from;
+        const to = link.to;
+        ctx.beginPath();
+        ctx.moveTo(from.x + from.width/2, from.y + from.height/2);
+        ctx.lineTo(to.x + to.width/2, to.y + to.height/2);
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    function createNode(x, y, text = 'Ý tưởng mới') {
+      const node = document.createElement('div');
+      node.className = 'node';
+      node.contentEditable = true;
+      node.innerText = text;
+      node.style.left = x + 'px';
+      node.style.top = y + 'px';
+      container.appendChild(node);
+
+      const nodeObj = { el: node, x, y, width: 120, height: 40 };
+      nodes.push(nodeObj);
+
+      // Drag and drop
+      let offsetX, offsetY, dragging = false;
+      node.addEventListener('mousedown', e => {
+        if (linkingMode) {
+          if (!linkStartNode) {
+            linkStartNode = nodeObj;
+            node.classList.add('selected');
+          } else if (linkStartNode !== nodeObj) {
+            links.push({ from: linkStartNode, to: nodeObj });
+            linkStartNode.el.classList.remove('selected');
+            linkStartNode = null;
+            linkingMode = false;
+            linkBtn.disabled = false;
+            drawLinks();
+          }
+          e.preventDefault();
+          return;
+        }
+        dragging = true;
+        offsetX = e.offsetX;
+        offsetY = e.offsetY;
+        node.style.cursor = 'grabbing';
+      });
+      document.addEventListener('mousemove', e => {
+        if (dragging) {
+          nodeObj.x = e.clientX - offsetX;
+          nodeObj.y = e.clientY - offsetY;
+          node.style.left = nodeObj.x + 'px';
+          node.style.top = nodeObj.y + 'px';
+          drawLinks();
+        }
+      });
+      document.addEventListener('mouseup', () => {
+        dragging = false;
+        node.style.cursor = 'grab';
+      });
+
+      // Update size on input
+      node.addEventListener('input', () => {
+        nodeObj.width = node.offsetWidth;
+        nodeObj.height = node.offsetHeight;
+        drawLinks();
+      });
+
+      return nodeObj;
+    }
+
+    addNodeBtn.onclick = () => {
+      createNode(100 + Math.random()*400, 100 + Math.random()*300);
+      drawLinks();
+    };
+
+    linkBtn.onclick = () => {
+      linkingMode = true;
+      linkBtn.disabled = true;
+      linkStartNode = null;
+      nodes.forEach(n => n.el.classList.remove('selected'));
+    };
+
+    // Responsive canvas
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      drawLinks();
+    });
+
+    // Tạo node trung tâm mặc định
+    createNode(window.innerWidth/2 - 60, window.innerHeight/2 - 20, 'Ý tưởng trung tâm');
+    drawLinks();
+  </script>
+</body>
+</html>
